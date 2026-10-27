@@ -1,5 +1,10 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { MAX_MESSAGE_LENGTH } from './chatClient'
 import { useChatSession } from './useChatSession'
+
+// 남은 글자가 이만큼 이하가 되면 입력창 아래에 글자 수를 보여 준다.
+// 붙여 넣은 글이 maxLength 에서 잘려도 알 수 있게 하려는 것이다.
+const COUNT_HINT_FROM = MAX_MESSAGE_LENGTH - 200
 
 /**
  * 마마몽떼 육아 상담 위젯.
@@ -156,6 +161,7 @@ function CounselPanel({ onClose }: { onClose: () => void }) {
             onChange={(e) => setValue(e.target.value)}
             onKeyDown={onKeyDown}
             rows={1}
+            maxLength={MAX_MESSAGE_LENGTH}
             disabled={status === 'restoring'}
             placeholder={status === 'restoring' ? '이전 대화를 불러오는 중…' : '여기에 마음을 적어보세요…'}
             aria-label="상담 메시지 입력"
@@ -178,6 +184,12 @@ function CounselPanel({ onClose }: { onClose: () => void }) {
         </div>
         <p className="mt-1 px-1 text-center text-[10px] text-mamamonte-lightBrown/70">
           Enter 전송 · Shift+Enter 줄바꿈
+          {value.length >= COUNT_HINT_FROM && (
+            <span className={value.length >= MAX_MESSAGE_LENGTH ? 'font-medium text-red-700' : undefined}>
+              {' · '}
+              {value.length}/{MAX_MESSAGE_LENGTH}자
+            </span>
+          )}
         </p>
       </div>
     </div>
